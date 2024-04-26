@@ -1,19 +1,47 @@
 #include "GameScene.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "ImGuiManager.h"
+#include "PrimitiveDrawer.h"
+#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() { 
+	delete model_;
+	delete debugCamera_;
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	textureHandle_ = TextureManager::Load("mario.png");
+	soundDataHandle_ = audio_->LoadWave("fanfare.wav");
+	model_ = Model::Create();
+	worldTransform_.Initialize();
+	viewProjection_.Initialize();
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
+	debugCamera_ = new DebugCamera(1280, 720);
+	AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+		audio_->StopWave(voiceHandle_);
+	}
+
+	ImGui::Begin("Debug1");
+	ImGui::Text("Kamata Tarou %d.%d.%d", 2050, 12, 31);
+	ImGui::InputFloat3("InputFloat3", inputFloat3);
+	ImGui::SliderFloat3("SliderFloat3", inputFloat3, 0.0f, 1.0f);
+	ImGui::ShowDemoWindow();
+	ImGui::End();
+
+	debugCamera_->Update();
+}
 
 void GameScene::Draw() {
 
@@ -42,6 +70,10 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -56,6 +88,6 @@ void GameScene::Draw() {
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
-
+	
 #pragma endregion
 }
