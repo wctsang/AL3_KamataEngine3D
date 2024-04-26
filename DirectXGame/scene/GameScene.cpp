@@ -33,12 +33,12 @@ void GameScene::Update() {
 		audio_->StopWave(voiceHandle_);
 	}
 
-	ImGui::Begin("Debug1");
+	/*ImGui::Begin("Debug1");
 	ImGui::Text("Kamata Tarou %d.%d.%d", 2050, 12, 31);
 	ImGui::InputFloat3("InputFloat3", inputFloat3);
 	ImGui::SliderFloat3("SliderFloat3", inputFloat3, 0.0f, 1.0f);
 	ImGui::ShowDemoWindow();
-	ImGui::End();
+	ImGui::End();*/
 
 	debugCamera_->Update();
 }
@@ -70,7 +70,6 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
 
