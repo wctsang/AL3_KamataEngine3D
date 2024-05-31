@@ -6,13 +6,18 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
-	//delete player_;
+	delete player_;
+	delete skydome_;
+
+	//delete blocks
+
 	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlock_) {
 		for (WorldTransform* worldTransformBlock : worldTransforBlockLine) {
 			delete worldTransformBlock;
 		}
 		worldTransformBlock_.clear();
 	}
+
 	delete debugCamera_;
 }
 
@@ -88,6 +93,7 @@ void GameScene::Initialize() {
 
 	model_ = Model::Create();
 	modelBlock_ = Model::Create();
+	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 
 	// ワールドトランスフォームの初期化
 
@@ -95,12 +101,17 @@ void GameScene::Initialize() {
 
 	// ビュープロジェクションの初期化
 
+	viewProjection_.farZ = 5000;
 	viewProjection_.Initialize();
 
 	// 自キャラの生成
-	//player_ = new Player();
+	player_ = new Player();
 	// 自キャラの初期化
-	//player_->Initialise(model_, textureHandle_, &viewProjection_);
+	player_->Initialise(model_, textureHandle_, &viewProjection_);
+
+	//天球生成
+	skydome_ = new Skydome;
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
 }
 
 void GameScene::Update() {
@@ -130,7 +141,7 @@ void GameScene::Update() {
 
 
 	// 自キャラの更新
-	//player_->Update();
+	player_->Update();
 }
 
 void GameScene::Draw() {
@@ -160,8 +171,12 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	//天球描画
+
+	skydome_->Draw();
+
 	// 自キャラの描画
-	//player_->Draw();
+	player_->Draw();
 
 	//ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlock_) {
