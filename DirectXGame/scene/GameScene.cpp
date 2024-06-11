@@ -19,6 +19,8 @@ GameScene::~GameScene() {
 	}
 
 	delete debugCamera_;
+
+	delete mapChipField_;
 }
 
 void GameScene::Initialize() {
@@ -27,59 +29,15 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	// ワールド、ビューの初期化
-
-	/*worldTransform_.Initialize();*/
-
-	viewProjection_.Initialize();
-
-	//要素数
-
-	const uint32_t kNumBlockVirtical = 10;
-
-	const uint32_t kNumBlockHorizontal = 20;
-
-	//ブロック1個分の横幅
-
-	const float kBlockWidth = 2.0f;
-
-	const float kBlockHeight = 2.0f;
-
 	//マップチップ
 
-	int map[kNumBlockVirtical][kNumBlockHorizontal] = {
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	    {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-        {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-        {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-	    {0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-	};
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/map.csv");
+	GenerateBlocks();
 
-	//要素数を変更する
+	// テクスチャを読み込む
 
-	worldTransformBlock_.resize(kNumBlockVirtical);
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlock_[i].resize(kNumBlockHorizontal);
-	}
-
-
-	//キューブの生成
-
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if (map[i][j] == 1) {
-				worldTransformBlock_[i][j] = new WorldTransform();
-				worldTransformBlock_[i][j]->Initialize();
-				worldTransformBlock_[i][j]->translation_.x = kBlockWidth * j;
-				worldTransformBlock_[i][j]->translation_.y = kBlockHeight * i;
-			}
-		}
-	}
+	textureHandle_ = TextureManager::Load("cube/cube.jpg");
 
 	//デバッグカメラ
 
@@ -95,19 +53,15 @@ void GameScene::Initialize() {
 	modelBlock_ = Model::Create();
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 
-	// ワールドトランスフォームの初期化
-
-	worldTransform_.Initialize();
-
 	// ビュープロジェクションの初期化
 
 	viewProjection_.farZ = 5000;
 	viewProjection_.Initialize();
 
 	// 自キャラの生成
-	player_ = new Player();
+	//player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialise(model_, textureHandle_, &viewProjection_);
+	//player_->Initialise(model_, textureHandle_, &viewProjection_);
 
 	//天球生成
 	skydome_ = new Skydome;
@@ -141,8 +95,27 @@ void GameScene::Update() {
 
 
 	// 自キャラの更新
-	player_->Update();
+	//player_->Update();
 }
+
+void GameScene::GenerateBlocks() {
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+	worldTransformBlock_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		worldTransformBlock_[i].resize(numBlockHorizontal);
+	}
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		for (uint32_t j = 0; j < numBlockHorizontal; j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlock_[i][j] = worldTransform;
+				worldTransformBlock_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
+};
 
 void GameScene::Draw() {
 
@@ -176,9 +149,11 @@ void GameScene::Draw() {
 	skydome_->Draw();
 
 	// 自キャラの描画
-	player_->Draw();
+
+	//player_->Draw();
 
 	//ブロックの描画
+
 	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlock_) {
 		for (WorldTransform* worldTransformBlock : worldTransforBlockLine) {
 			if (!worldTransformBlock)
