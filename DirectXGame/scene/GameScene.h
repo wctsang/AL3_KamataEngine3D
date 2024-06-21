@@ -7,8 +7,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "DebugCamera.h"
 #include "Player.h"
+#include "DebugCamera.h"
 #include "Skydome.h"
 #include "MapChipField.h"
 #include <vector>
@@ -17,7 +17,6 @@
 /// ゲームシーン
 /// </summary>
 class GameScene {
-
 
 public: // メンバ関数
 	/// <summary>
@@ -49,49 +48,49 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-	
 
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	
-	//テクスチャハンドル
+
+	// テクスチャハンドル
 
 	uint32_t textureHandle_ = 0;
 
-	//3Dモデル
+	// 3Dモデル
 
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 
-	//ワールドトランスフォーム
+	// ワールドトランスフォーム
 
 	WorldTransform worldTransform_;
 
-	//ビュープロジェクション
+	// ビュープロジェクション
 
 	ViewProjection viewProjection_;
 
-	//自キャラ
+	// 自キャラ
+	Player* player_;
 
-	Player* player_ = nullptr;
+	Model* modelPlayer_ = nullptr;
 
-	//天球
+	// 天球
 
 	Skydome* skydome_ = nullptr;
 
-	//マップチップ
+	// マップチップ
 
 	MapChipField* mapChipField_;
 
 	void GenerateBlocks();
 
-	//縦横ブロック配列
+	// 縦横ブロック配列
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlock_;
 
-	//デバッグカメラ
+	// デバッグカメラ
 
 	bool isDebugCameraActive_ = false;
 

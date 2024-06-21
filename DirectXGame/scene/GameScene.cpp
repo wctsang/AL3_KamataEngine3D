@@ -9,6 +9,8 @@ GameScene::~GameScene() {
 	delete player_;
 	delete skydome_;
 
+	delete modelPlayer_;
+
 	//delete blocks
 
 	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlock_) {
@@ -43,9 +45,18 @@ void GameScene::Initialize() {
 
 	debugCamera_ = new DebugCamera(1280, 720);
 
+	// 自キャラの生成
+
+	player_ = new Player();
+
+	// 自キャラの初期化
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	player_->Initialise(modelPlayer_, &viewProjection_, playerPosition);
+
 	//ファイル名を指定してテクスチャを読み込む
 
-	textureHandle_ = TextureManager::Load("mario.png");
+//	textureHandle_ = TextureManager::Load("player/player.png");
 
 	// 3Dモデルの生成
 
@@ -57,11 +68,6 @@ void GameScene::Initialize() {
 
 	viewProjection_.farZ = 5000;
 	viewProjection_.Initialize();
-
-	// 自キャラの生成
-	//player_ = new Player();
-	// 自キャラの初期化
-	//player_->Initialise(model_, textureHandle_, &viewProjection_);
 
 	//天球生成
 	skydome_ = new Skydome;
@@ -95,7 +101,8 @@ void GameScene::Update() {
 
 
 	// 自キャラの更新
-	//player_->Update();
+	
+	player_->Update();
 }
 
 void GameScene::GenerateBlocks() {
@@ -150,7 +157,7 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 
-	//player_->Draw();
+	player_->Draw();
 
 	//ブロックの描画
 

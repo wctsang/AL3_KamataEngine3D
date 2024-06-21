@@ -1,13 +1,7 @@
 #pragma once
-#include <vector>
-#include <Vector3.h>
 #include <cstdint>
-#include <cassert>
-#include <fstream>
-#include <map>
-#include <sstream>
-#include <string>
 #include <vector>
+#include "Vector3.h"
 
 enum class MapChipType {
 	kBlank,

@@ -1,6 +1,17 @@
-#include "GameScene.h"
+#pragma once
+
+#include <cmath>
+#include <math.h>
+#include "Vector3.h"
+#include "Matrix4x4.h"
 
 // 関数宣言
+
+// 加算
+Vector3 Add(const Vector3& v1, const Vector3& v2);
+
+// 減算
+Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 
 // 積
 
@@ -17,9 +28,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 // 回転
 
 Matrix4x4 MakeRotateXMatrix(float radian);
-
 Matrix4x4 MakeRotateYMatrix(float radian);
-
 Matrix4x4 MakeRotateZMatrix(float radian);
 
 // アフィン変換
