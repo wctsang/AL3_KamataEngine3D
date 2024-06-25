@@ -108,6 +108,16 @@ void Player::Update() {
 		worldTransform_.rotation_.y = nowRotationY;
 	}
 
+	// 畫面制限
+
+	if (worldTransform_.translation_.x > 16) {
+		worldTransform_.translation_.x = 16;
+	}
+
+	if (worldTransform_.translation_.x < 2) {
+		worldTransform_.translation_.x = 2;
+	}
+
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 	worldTransform_.UpdateMatrix();
 }
@@ -118,3 +128,5 @@ void Player::Draw() {
 	model_->Draw(worldTransform_, *viewProjection_);
 
 }
+
+WorldTransform& Player::GetWorldTransform() { return worldTransform_; }

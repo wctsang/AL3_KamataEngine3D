@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "Skydome.h"
 #include "MapChipField.h"
+#include "CameraControl.h"
 #include <vector>
 
 /// <summary>
@@ -95,4 +96,6 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 
 	DebugCamera* debugCamera_ = nullptr;
+
+	CameraControl* cameraControl_ = nullptr;
 };

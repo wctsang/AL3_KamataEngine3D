@@ -23,6 +23,8 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 
 	delete mapChipField_;
+
+	delete cameraControl_;
 }
 
 void GameScene::Initialize() {
@@ -54,10 +56,6 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	player_->Initialise(modelPlayer_, &viewProjection_, playerPosition);
 
-	//ファイル名を指定してテクスチャを読み込む
-
-//	textureHandle_ = TextureManager::Load("player/player.png");
-
 	// 3Dモデルの生成
 
 	model_ = Model::Create();
@@ -72,6 +70,15 @@ void GameScene::Initialize() {
 	//天球生成
 	skydome_ = new Skydome;
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
+
+	//カメラ
+
+	cameraControl_ = new CameraControl();
+	cameraControl_->Initialize();
+	CameraControl::Rect cameraArea_ = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
+	cameraControl_->SetMovableArea(cameraArea_);
+	cameraControl_->SetTarget(player_);
+	cameraControl_->Reset();
 }
 
 void GameScene::Update() {
@@ -80,13 +87,18 @@ void GameScene::Update() {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 
+	skydome_->Update();
+
 	if (isDebugCameraActive_ == true) {
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	} else {
-		viewProjection_.UpdateMatrix();
+		viewProjection_.matView = cameraControl_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraControl_->GetViewProjection().matProjection;
+		//ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
 	}
 
 	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlock_) {
@@ -103,6 +115,11 @@ void GameScene::Update() {
 	// 自キャラの更新
 	
 	player_->Update();
+
+	//カメラの更新
+
+	cameraControl_->Update();
+
 }
 
 void GameScene::GenerateBlocks() {

@@ -21,6 +21,12 @@ public:
 	/// </summary>
 	void Draw();
 
+	WorldTransform& GetWorldTransform();
+
+	const Vector3& GetVelocity()const { return velocity_; }
+
+	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
