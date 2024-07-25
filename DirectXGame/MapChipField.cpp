@@ -1,18 +1,22 @@
-#include <cassert>
+#include <assert.h>
 #include <map>
 #include <fstream>
 #include <sstream>
-#include <string>
 #include "MapChipField.h"
 
 
 namespace {
-std::map<std::string, MapChipType> mapChipTable = {
+	std::map<std::string, MapChipType> mapChipTable = {
 
     {"0", MapChipType::kBlank},
     {"1", MapChipType::kBlock},
+
+	};
 };
-};
+
+uint32_t MapChipField::GetNumBlockVertical() { return kNumBlockVertical; }
+
+uint32_t MapChipField::GetNumBlockHorizontal() { return kNumBlockHorizontal; }
 
 void MapChipField::ResetMapChipData() {
 	mapChipData_.data.clear();
@@ -34,7 +38,7 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath){
 	mapChipCsv << file.rdbuf();
 	//CLOSE FILE
 	file.close();
-	//DATA FROM CSI
+	//DATA FROM CSV
 	for (uint32_t i = 0; i < kNumBlockVertical; ++i) {
 		std::string line;
 		getline(mapChipCsv, line);
@@ -52,6 +56,8 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath){
 	}
 };
 
+
+
 MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
 	if (xIndex < 0 || kNumBlockHorizontal - 1 < xIndex) {
 		return MapChipType::kBlank;
@@ -68,6 +74,26 @@ Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex
 };
 
 
-uint32_t MapChipField::GetNumBlockVertical() { return kNumBlockVertical; }
 
-uint32_t MapChipField::GetNumBlockHorizontal() { return kNumBlockHorizontal; }
+
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+
+	IndexSet indexSet = {};
+
+	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
+	indexSet.yIndex = kNumBlockVertical - 1 -
+	                  static_cast<uint32_t>(position.y + kBlockHeight/2.0f/kBlockHeight);
+
+	return indexSet;
+}
+
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) { 
+	Vector3 centre = GetMapChipPositionByIndex(xIndex, yIndex);
+	MapChipField::Rect rect;
+	rect.left = centre.x - kBlockWidth / 2.0f;
+	rect.right = centre.x + kBlockWidth / 2.0f;
+	rect.bottom = centre.y - kBlockWidth / 2.0f;
+	rect.top = centre.y + kBlockWidth / 2.0f;
+
+	return rect;
+}

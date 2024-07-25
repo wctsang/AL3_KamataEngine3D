@@ -45,6 +45,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void GenerateBlocks();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -62,7 +64,6 @@ private: // メンバ変数
 
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
-	Model* modelSkydome_ = nullptr;
 
 	// ワールドトランスフォーム
 
@@ -75,18 +76,6 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_;
 
-	Model* modelPlayer_ = nullptr;
-
-	// 天球
-
-	Skydome* skydome_ = nullptr;
-
-	// マップチップ
-
-	MapChipField* mapChipField_;
-
-	void GenerateBlocks();
-
 	// 縦横ブロック配列
 
 	std::vector<std::vector<WorldTransform*>> worldTransformBlock_;
@@ -97,5 +86,15 @@ private: // メンバ変数
 
 	DebugCamera* debugCamera_ = nullptr;
 
+	// 天球
+
+	Skydome* skydome_ = nullptr;
+
+	Model* modelSkydome_ = nullptr;	
+
 	CameraControl* cameraControl_ = nullptr;
+
+	// マップチップ
+
+	MapChipField* mapChipField_ = nullptr;
 };
