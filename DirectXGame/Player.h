@@ -50,6 +50,8 @@ public:
 	Vector3 CornerPostion(const Vector3& centre, Corner corner);
 	void Turn();
 
+	bool cameraStop = false;
+
 	private:
 	
 	struct CollisionMapInfo {
@@ -110,6 +112,7 @@ public:
 	static inline const float kHeight = 0.8f;
 
 	static inline const float kBlank = 0.04f;
+	static inline const float kAttenuationLanding = 0.0f;
 	static inline const float kAttenuationWall = 0.2f;
 
 	void CheckMapCollision(CollisionMapInfo& info);
@@ -117,4 +120,9 @@ public:
 	void CheckMapCollisionBottom(CollisionMapInfo& info);
 	void CheckMapCollisionRight(CollisionMapInfo& info);
 	void CheckMapCollisionLeft(CollisionMapInfo& info);
+
+	void collisionResult(CollisionMapInfo& info);
+	void isCeilingCollision(CollisionMapInfo& info);
+	void isLandingCollision(CollisionMapInfo& info);
+	void isWallCollision(CollisionMapInfo& info);
 };

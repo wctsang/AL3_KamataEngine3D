@@ -1,6 +1,7 @@
 #include "CameraControl.h"
 #include "Player.h"
 #include <algorithm>
+#include "myMath.h"
 
 /// 初期化
 
@@ -13,7 +14,12 @@ void CameraControl::Update() {
 	// 追従対象のワールドトランスフォームを参照
 
 	const WorldTransform& targetWorldTransform = target_->GetWorldTransform();
-	const Vector3& targetVelocity = target_->GetVelocity();
+	Vector3 targetVelocity = target_->GetVelocity();
+	if (target_->cameraStop == true) {
+		targetVelocity.y = 0;
+	}
+
+	destination_ = Add(Add(targetWorldTransform.translation_, targetOffset_), Multiply(kVelocityBias_, targetVelocity));
 
 	destination_.x = targetWorldTransform.translation_.x + targetOffset_.x * targetVelocity.x + targetOffset_.x;
 	destination_.y = targetWorldTransform.translation_.y + targetOffset_.y * targetVelocity.y + targetOffset_.y;
@@ -35,6 +41,7 @@ void CameraControl::Update() {
 	viewProjection_.translation_.y = std::clamp(viewProjection_.translation_.y, movableArea_.bottom, movableArea_.top);
 
 	// 行列を更新する
+
 	viewProjection_.UpdateMatrix();
 
 }
