@@ -368,7 +368,8 @@ AABB Player::GetAABB() {
 
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
-	velocity_ = Add(velocity_, Vector3(0, 0.2f, 0));
+	//velocity_ = Add(velocity_, Vector3(0, 0.2f, 0));
+	isDead_ = true;
 }
 
 Vector3 Player::CornerPostion(const Vector3& center, Corner corner) {

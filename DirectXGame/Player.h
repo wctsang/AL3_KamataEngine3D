@@ -61,6 +61,11 @@ public:
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
 
+	//倒されたフラグ
+
+	bool isDead_ = false;
+	bool IsDead() const { return isDead_; };
+
 	private:
 	
 	struct CollisionMapInfo {

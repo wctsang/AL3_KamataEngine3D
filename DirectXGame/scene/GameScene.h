@@ -51,6 +51,10 @@ public: // メンバ関数
 
 	void CheckAllCollisions();
 
+	void ChangePhase();
+
+	bool IsFinished() const { return finished_; }
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -114,5 +118,16 @@ private: // メンバ変数
 	Model* modelParticle_ = nullptr;
 
 	DeathParticles* deathParticles_ = nullptr;
+
+	//フェーズ
+
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+
+	Phase phase_;
+
+	bool finished_ = false;
 
 };

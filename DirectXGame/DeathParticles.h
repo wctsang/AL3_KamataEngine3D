@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Model.h"
 #include "WorldTransform.h"
@@ -11,17 +11,19 @@
 class DeathParticles {
 
 public:
+
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
-
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	bool IsFinished() { return isFinished_; }
 
 private:
 

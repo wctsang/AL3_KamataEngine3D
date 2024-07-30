@@ -1,6 +1,7 @@
-﻿#include "DeathParticles.h"
+#include "DeathParticles.h"
 
 void DeathParticles::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
+
 	assert(model);
 	model_ = model;
 	viewProjection_ = viewProjection;
@@ -33,6 +34,7 @@ void DeathParticles::Update() {
 		velocity = Transform(velocity, matrixRotation);
 		worldTransforms_[i].translation_ = Add(worldTransforms_[i].translation_, velocity);
 	}
+
 	for (auto& worldTransfrom : worldTransforms_) {
 		worldTransfrom.UpdateMatrix();
 	}
@@ -43,10 +45,14 @@ void DeathParticles::Update() {
 }
 
 void DeathParticles::Draw() {
+
 	if (isFinished_) {
 		return;
 	}
+
 	for (auto& worldTransfrom : worldTransforms_) {
-		model_->Draw(worldTransfrom, *viewProjection_, &objectColor_);
+		if (model_ != nullptr) {
+			model_->Draw(worldTransfrom, *viewProjection_, &objectColor_);
+		}
 	}
 }
