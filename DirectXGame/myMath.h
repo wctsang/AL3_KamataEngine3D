@@ -58,3 +58,12 @@ const Vector3 operator-(const Vector3& v1, const Vector3& v2);
 const Vector3 operator*(const Vector3& v, float s);
 const Vector3 operator*(float s, const Vector3& v);
 const Vector3 operator/(const Vector3& v, float s);
+
+//衝突判定
+
+struct AABB {
+	Vector3 min;
+	Vector3 max;
+};
+
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);

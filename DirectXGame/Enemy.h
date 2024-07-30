@@ -6,6 +6,7 @@
 #include <cassert>
 #include <numbers>
 
+class Player;
 
 class Enemy {
 
@@ -13,6 +14,12 @@ class Enemy {
 	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
 	void Update();
 	void Draw();
+
+	WorldTransform& GetWorldTransform() { return worldTransform_; }
+
+	Vector3 GetWorldPosition();
+	AABB GetAABB();
+	void OnCollision(const Player* player);
 
 	private:
 	WorldTransform worldTransform_;
@@ -28,5 +35,8 @@ class Enemy {
 	static inline const float kWalkMotionTime = 2.0f; 
 
 	float walkTimer_ = 0.0f;
+
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
 
 };

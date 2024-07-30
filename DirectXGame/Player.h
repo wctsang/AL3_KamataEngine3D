@@ -3,8 +3,11 @@
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "myMath.h"
 
 class MapChipField;
+
+class Enemy;
 
 class Player {
 public:
@@ -51,6 +54,12 @@ public:
 	void Turn();
 
 	bool cameraStop = false;
+
+	//敵との衝突
+
+	Vector3 GetWorldPosition();
+	AABB GetAABB();
+	void OnCollision(const Enemy* enemy);
 
 	private:
 	

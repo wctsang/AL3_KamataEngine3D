@@ -48,6 +48,8 @@ public: // メンバ関数
 
 	void GenerateBlocks();
 
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -99,7 +101,11 @@ private: // メンバ変数
 
 	MapChipField* mapChipField_ = nullptr;
 
+	//敵
+
 	Model* modelEnemy_ = nullptr;
 
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	static inline const uint32_t enemyCount = 3;
+
 };

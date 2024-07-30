@@ -19,6 +19,10 @@ GameScene::~GameScene() {
 		}
 	}
 
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
+
 	worldTransformBlock_.clear();
 
 	delete debugCamera_;
@@ -61,18 +65,22 @@ void GameScene::Initialize() {
 
 	player_->Initialize(playerPosition, &viewProjection_);
 
+	//敵生成
+
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 
-	enemy_ = new Enemy();
+	Vector3 enemyPosition[enemyCount];
 
-	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18);
-	// 天球生成
-
-	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-
-	skydome_ = new Skydome;
+	for (uint32_t i = 0; i < enemyCount; ++i) {
+		Enemy* newEnemy = new Enemy();
+		enemyPosition[i] = mapChipField_->GetMapChipPositionByIndex(10 - i * 3, 18);
+		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition[i]);
+		enemies_.push_back(newEnemy);
+	}
 
 	//天球3Dモデル生成
+
+	skydome_ = new Skydome;
 
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 
@@ -138,7 +146,15 @@ void GameScene::Update() {
 
 	player_->Update();
 
-	enemy_->Update();
+	//敵更新
+
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
+	}
+
+	//衝突判定更新
+
+	CheckAllCollisions();
 
 	//天球の更新
 	skydome_->Update();
@@ -182,6 +198,23 @@ void GameScene::GenerateBlocks() {
 	}
 };
 
+void GameScene::CheckAllCollisions() {
+
+	// プレイヤーと敵の衝突判定
+
+	AABB aabb1, aabb2;
+
+	aabb1 = player_->GetAABB();
+
+	for (Enemy* enemy : enemies_) {
+		aabb2 = enemy->GetAABB();
+		if (IsCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
+	}
+}
+
 void GameScene::Draw() {
 
 	// コマンドリストの取得
@@ -215,9 +248,12 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw();
 
-	if (enemy_ != nullptr) {
-		enemy_->Draw();
+	for (Enemy* enemy : enemies_) {
+		if (enemy != nullptr) {
+			enemy->Draw();
+		}
 	}
+
 	//ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockVertical : worldTransformBlock_) {
 		for (WorldTransform* worldTransformBlockHorizontal : worldTransformBlockVertical) {

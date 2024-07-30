@@ -1,4 +1,5 @@
-﻿#include "Enemy.h"
+#include "Enemy.h"
+
 void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 
 	assert(model);
@@ -14,10 +15,7 @@ void Enemy::Initialize(Model* model, ViewProjection* viewProjection, const Vecto
 void Enemy::Update() {
 	worldTransform_.translation_ = Add(worldTransform_.translation_,velocity_);
 
-
 	walkTimer_ += 1.0f / 60.0f;
-
-
 
 	float param = std::sin(std::numbers::pi_v<float> * 2.0f * walkTimer_);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
@@ -29,3 +27,21 @@ void Enemy::Update() {
 }
 
 void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos = {};
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
+}
+
+AABB Enemy::GetAABB() {
+	Vector3 worldPos = GetWorldPosition();
+	AABB aabb;
+	aabb.min = {worldPos.x - kWidth / 2.0f, worldPos.y - kHeight / 2.0f, worldPos.z - kWidth / 2.0f};
+	aabb.max = {worldPos.x + kWidth / 2.0f, worldPos.y + kHeight / 2.0f, worldPos.z + kWidth / 2.0f};
+	return aabb;
+}
+
+void Enemy::OnCollision(const Player* player) { (void)player; }
