@@ -23,6 +23,8 @@ GameScene::~GameScene() {
 		delete enemy;
 	}
 
+	delete deathParticles_;
+
 	worldTransformBlock_.clear();
 
 	delete debugCamera_;
@@ -88,6 +90,14 @@ void GameScene::Initialize() {
 
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
+	//パーティクル生成
+
+	modelParticle_ = Model::CreateFromOBJ("deathParticle", true);
+
+	deathParticles_ = new DeathParticles();
+
+	deathParticles_->Initialize(modelParticle_, &viewProjection_, playerPosition);
+
 	// デバッグカメラ
 
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -150,6 +160,12 @@ void GameScene::Update() {
 
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
+	}
+
+	//パーティクル更新
+
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
 	}
 
 	//衝突判定更新
@@ -248,10 +264,18 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw();
 
+	//敵描画
+
 	for (Enemy* enemy : enemies_) {
 		if (enemy != nullptr) {
 			enemy->Draw();
 		}
+	}
+
+	//パーティクル描画
+
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Draw();
 	}
 
 	//ブロックの描画

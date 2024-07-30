@@ -13,6 +13,7 @@
 #include "MapChipField.h"
 #include "CameraControl.h"
 #include "Enemy.h"
+#include "DeathParticles.h"
 #include <vector>
 
 /// <summary>
@@ -107,5 +108,11 @@ private: // メンバ変数
 
 	std::list<Enemy*> enemies_;
 	static inline const uint32_t enemyCount = 3;
+
+	//パーティクル
+
+	Model* modelParticle_ = nullptr;
+
+	DeathParticles* deathParticles_ = nullptr;
 
 };
