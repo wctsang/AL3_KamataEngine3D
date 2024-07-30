@@ -61,7 +61,14 @@ void GameScene::Initialize() {
 
 	player_->Initialize(playerPosition, &viewProjection_);
 
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+
+	enemy_ = new Enemy();
+
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18);
 	// 天球生成
+
+	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 
 	skydome_ = new Skydome;
 
@@ -131,8 +138,9 @@ void GameScene::Update() {
 
 	player_->Update();
 
-	//天球の更新
+	enemy_->Update();
 
+	//天球の更新
 	skydome_->Update();
 
 	//縦横ブロック更新
@@ -202,15 +210,15 @@ void GameScene::Draw() {
 	/// </summary>
 
 	//天球描画
-
 	skydome_->Draw();
 
 	// 自キャラの描画
-
 	player_->Draw();
 
+	if (enemy_ != nullptr) {
+		enemy_->Draw();
+	}
 	//ブロックの描画
-
 	for (std::vector<WorldTransform*>& worldTransformBlockVertical : worldTransformBlock_) {
 		for (WorldTransform* worldTransformBlockHorizontal : worldTransformBlockVertical) {
 			if (!worldTransformBlockHorizontal)

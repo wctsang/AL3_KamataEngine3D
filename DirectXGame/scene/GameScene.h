@@ -12,6 +12,7 @@
 #include "Skydome.h"
 #include "MapChipField.h"
 #include "CameraControl.h"
+#include "Enemy.h"
 #include <vector>
 
 /// <summary>
@@ -97,4 +98,8 @@ private: // メンバ変数
 	// マップチップ
 
 	MapChipField* mapChipField_ = nullptr;
+
+	Model* modelEnemy_ = nullptr;
+
+	Enemy* enemy_ = nullptr;
 };
