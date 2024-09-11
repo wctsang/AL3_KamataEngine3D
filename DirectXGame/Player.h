@@ -60,11 +60,14 @@ public:
 	Vector3 GetWorldPosition();
 	AABB GetAABB();
 	void OnCollision(const Enemy* enemy);
+	void FlagCollision(Player* player);
 
 	//倒されたフラグ
 
 	bool isDead_ = false;
+	bool isClear_ = false;
 	bool IsDead() const { return isDead_; };
+	bool IsClear() const { return isClear_; }
 
 	private:
 	

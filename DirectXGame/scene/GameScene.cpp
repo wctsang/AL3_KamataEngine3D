@@ -32,6 +32,8 @@ GameScene::~GameScene() {
 	delete mapChipField_;
 
 	delete cameraControl_;
+
+	delete sprite_;
 }
 
 void GameScene::Initialize() {
@@ -42,7 +44,9 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 
-//	textureHandle_ = TextureManager::Load("block.png");
+	flagHandle_ = TextureManager::Load("flag.png");
+
+	sprite_ = Sprite::Create(flagHandle_, {960, 320});
 
 	// 3Dモデルの生成
 
@@ -167,6 +171,9 @@ void GameScene::CheckAllCollisions() {
 			enemy->OnCollision(player_);
 		}
 	}
+
+	//旗判定
+	player_->FlagCollision(player_);
 #pragma endregion
 }
 
@@ -204,6 +211,11 @@ void GameScene::ChangePhase() {
 		CheckAllCollisions();
 
 		if (player_->isDead_) {
+			phase_ = Phase::kDeath;
+			const Vector3& deathPosition = player_->GetWorldTransform().translation_;
+			deathParticles_->Initialize(modelParticle_, &viewProjection_, deathPosition);
+		}
+		if (player_->isClear_) {
 			phase_ = Phase::kDeath;
 			const Vector3& deathPosition = player_->GetWorldTransform().translation_;
 			deathParticles_->Initialize(modelParticle_, &viewProjection_, deathPosition);
@@ -293,6 +305,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	
+	// 旗描画
+	sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

@@ -5,8 +5,8 @@
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
-#include "WinApp.h"
 #include "TitleScene.h"
+#include "WinApp.h"
 
 enum class Scene {
 	kUnkonwn = 0,

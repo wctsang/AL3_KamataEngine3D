@@ -66,12 +66,14 @@ private: // メンバ変数
 
 	// テクスチャハンドル
 
-	uint32_t textureHandle_ = 0;
+	uint32_t flagHandle_ = 0;
+	Sprite* sprite_ = nullptr;
 
 	// 3Dモデル
 
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
+	
 
 	// ワールドトランスフォーム
 

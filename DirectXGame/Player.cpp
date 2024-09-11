@@ -372,6 +372,12 @@ void Player::OnCollision(const Enemy* enemy) {
 	isDead_ = true;
 }
 
+void Player::FlagCollision(Player* player) {
+	if (player->kRightBottom == (960, 320)) {
+		isClear_ = true;
+	}
+}
+
 Vector3 Player::CornerPostion(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorners] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},
